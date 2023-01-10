@@ -9,4 +9,4 @@ request = Net::HTTP::Get.new(url)
 request["Authorization"] = "OAuth oauth_consumer_key=\"wzKJH2WQJQ2QVYWjqZ\",oauth_token=\"SLFU2E9EqjMwUmJY4V\",oauth_signature_method=\"PLAINTEXT\",oauth_timestamp=\"1673393600\",oauth_nonce=\"HH4LUSureA3\",oauth_version=\"1.0\",oauth_signature=\"%26XRnrfpxugwyFayLPu8Aqya4jMDxwMCSv\""
 
 response = http.request(request)
-puts response.read_body
+return response.read_body
