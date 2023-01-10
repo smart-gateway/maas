@@ -5,7 +5,7 @@
 # @example
 #   maas::host { 'namevar': }
 define maas::host (
-  String $mmas_server = 'localhost',
+  String $maas_server = 'localhost',
   String $maas_api_base = '/MAAS/api/2.0/',
   String $maas_consumer_key = '',
   String $maas_token_key = '',
