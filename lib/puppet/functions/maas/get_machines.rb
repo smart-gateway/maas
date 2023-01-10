@@ -5,7 +5,7 @@ require "net/http"
 Puppet::Functions.create_function(:'maas::get_machines') do
 
   def get_machines()
-    url = URI("http://puppet.edge.lan:5240/MAAS/api/2.0/machines/")
+    url = URI("http://maas.edge.lan:5240/MAAS/api/2.0/machines/")
 
     http = Net::HTTP.new(url.host, url.port);
     request = Net::HTTP::Get.new(url)
