@@ -5,13 +5,41 @@
 # @example
 #   maas::host { 'namevar': }
 define maas::host (
-  String $maas_server = 'localhost',
-  String $maas_api_base = '/MAAS/api/2.0/',
-  Sensitive[String] $maas_consumer_key = '',
-  Sensitive[String] $maas_token_key = '',
-  Sensitive[String] $maas_token_secret = '',
+  String            $ensure = present,
+  String            $maas_server = 'localhost',
+  Sensitive[String] $maas_consumer_key,
+  Sensitive[String] $maas_token_key,
+  Sensitive[String] $maas_token_secret,
+  String            $machine_name,
+  String            $machine_mac,
+  String            $machine_description = '',
+  String            $machine_domain = '',
+  String            $machine_architecture = 'amd64',
+  String            $power_type = 'manual',
+  Hash              $power_parameters = {},
 ) {
-  # Test to see if I can even access the API
-  #$result = maas::create_machine()
-  #notify { "result: ${result}": }
+
+  # Ensure Values
+  # new (new/created)
+  # ready (ready/commissioned/present)
+  # deployed (deployed)
+  # absent (absent/removed)
+
+  case $ensure {
+    'present': {
+      if !maas::machine_exists() {
+
+      }
+    }
+
+    'absent': {
+      if maas::machine_exists() {
+
+      }
+    }
+
+    default: {
+      err("invalid ensure value ${ensure} specified")
+    }
+  }
 }
