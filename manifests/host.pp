@@ -31,17 +31,26 @@ define maas::host (
     ""      => $::maas::maas_consumer_key,
     default => $maas_consumer_key,
   }
+  if $key == undef or $key == "" {
+    err('maas_consumer_key is required and must be set at the class level or in the host parameters')
+  }
 
   $token = $maas_token_key ? {
     undef   => $::maas::maas_token_key,
     ""      => $::maas::maas_token_key,
     default => $maas_token_key,
   }
+  if $key == undef or $key == "" {
+    err('maas_token_key is required and must be set at the class level or in the host parameters')
+  }
 
   $secret = $maas_token_secret ? {
     undef   => $::maas::maas_token_secret,
     ""      => $::maas::maas_token_secret,
     default => $maas_token_secret,
+  }
+  if $key == undef or $key == "" {
+    err('maas_token_secret is required and must be set at the class level or in the host parameters')
   }
 
   case $ensure {
