@@ -16,11 +16,11 @@ Puppet::Functions.create_function(:'maas::create_machine') do
                                "architecture": "amd64",
                                "min_hwe_kernel": "",
                                "mac_addresses": "52:54:00:e0:9e:51",
-                               "hostname": "vm-example-01",
+                               "hostname": "vm-custom-01",
                                "description": "Puppet deployed and controlled VM",
                                "power_type": "virsh",
                                "power_parameters_power_address": "qemu+ssh://intel@node02.maas.edge.lan/system",
-                               "power_parameters_power_id": "vm-example-01",
+                               "power_parameters_power_id": "vm-custom-01",
                                "commission": true,
                                "testing_scripts": "none",
                                "domain": "lenovo.edge.lan"
