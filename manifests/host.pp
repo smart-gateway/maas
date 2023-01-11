@@ -39,6 +39,8 @@ define maas::host (
           if $system_id != Undef {
             $deploy_result = maas::machine_deploy($maas_server, $maas_consumer_key.unwrap, $maas_token_key.unwrap, $maas_token_secret.unwrap, $system_id, $user_data_b64)
           }
+        } elsif $status == 6 or $status == 9 {
+          # System is already deploying or deployed
         } else {
           notify { "${machine_name} unable to deploy as status is not in 'ready'...status = ${status}": }
         }
