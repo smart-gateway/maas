@@ -79,6 +79,16 @@ define maas::host (
       # Get the machines status
       $status = maas::machine_get_status($server, $key, $token, $secret, $machine_name)
 
+      # If a default fabric is set then make sure all unassigned interfaces are put on the default fabric
+      if $status == 0 or $status == 1 or $status == 10 or $status == 8 and $::maas::maas_default_fabric != '' {
+        $system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
+        $unassigned_interfaces = maas::machine_get_interfaces_on_default_fabric($server, $key, $token, $secret, $system_id)
+        $vlan_id = maas::fabric_get_default_vlan_id($server, $key, $token, $secret, $::maas::maas_default_fabric)
+        $unassigned_interfaces.each | $idx, $interface_id | {
+          maas::interface_update_fabric($server, $key, $token, $secret, $system_id, $interface_id, $vlan_id)
+        }
+      }
+
       # If it should be in a commissioned state then ensure it has been commissioned
       if $ensure == 'ready' or $ensure == 'present' or $ensure == 'commissioned' or $ensure == 'deployed' {
         # Commission if the system is in the new state
