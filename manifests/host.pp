@@ -28,13 +28,15 @@ define maas::host (
   case $ensure {
     'present': {
       if !maas::machine_exists() {
-
+        $result = maas::machine_create()
+        notify { "result: ${result}": }
       }
     }
 
     'absent': {
       if maas::machine_exists() {
-
+        $result = maas::machine_delete()
+        notify { "result: ${result}": }
       }
     }
 
