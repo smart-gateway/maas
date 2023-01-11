@@ -7,9 +7,10 @@ Puppet::Functions.create_function(:'maas::create_machine') do
   def create_machine()
     url = URI("http://maas.edge.lan:5240/MAAS/api/2.0/machines/")
 
-    http = Net::HTTP.new(url.host, url.port);
+    http = Net::HTTP.new(url.host, url.port)
+    nonce = rand(10 ** 30).to_s.rjust(30,'0')
     request = Net::HTTP::Get.new(url)
-    request["Authorization"] = "OAuth oauth_consumer_key=\"wzKJH2WQJQ2QVYWjqZ\",oauth_token=\"SLFU2E9EqjMwUmJY4V\",oauth_signature_method=\"PLAINTEXT\",oauth_timestamp=\"#{Time.now.to_i}\",oauth_nonce=\"HH4LUSureA3\",oauth_version=\"1.0\",oauth_signature=\"%26XRnrfpxugwyFayLPu8Aqya4jMDxwMCSv\""
+    request["Authorization"] = "OAuth oauth_consumer_key=\"wzKJH2WQJQ2QVYWjqZ\",oauth_token=\"SLFU2E9EqjMwUmJY4V\",oauth_signature_method=\"PLAINTEXT\",oauth_timestamp=\"#{Time.now.to_i}\",oauth_nonce=\"#{nonce}\",oauth_version=\"1.0\",oauth_signature=\"%26XRnrfpxugwyFayLPu8Aqya4jMDxwMCSv\""
     request["Content-Type"] = "application/json"
     request.body = JSON.dump({
                                "architecture": "amd64",
