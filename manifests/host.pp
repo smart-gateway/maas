@@ -60,16 +60,16 @@ define maas::host (
 
   case $ensure {
     'present', 'deployed': {
-      if !maas::machine_exists($maas_server, $key, $token, $secret, $machine_name) {
-        $result = maas::machine_create($maas_server, $key, $token, $secret, $machine_name, $machine_domain, $machine_architecture, $machine_mac, $machine_description, $power_type, $power_parameters)
+      if !maas::machine_exists($server, $key, $token, $secret, $machine_name) {
+        $result = maas::machine_create($server, $key, $token, $secret, $machine_name, $machine_domain, $machine_architecture, $machine_mac, $machine_description, $power_type, $power_parameters)
       }
 
       if $ensure == 'deployed' {
-        $status = maas::machine_get_status($maas_server, $key, $token, $secret, $machine_name)
+        $status = maas::machine_get_status($server, $key, $token, $secret, $machine_name)
         if $status == 4 {
-          $system_id = maas::machine_get_system_id($maas_server, $key, $token, $secret, $machine_name)
+          $system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
           if $system_id != Undef {
-            $deploy_result = maas::machine_deploy($maas_server, $key, $token, $secret, $system_id, $user_data_b64)
+            $deploy_result = maas::machine_deploy($server, $key, $token, $secret, $system_id, $user_data_b64)
           }
         } elsif $status == 6 or $status == 9 {
           # System is already deploying or deployed
