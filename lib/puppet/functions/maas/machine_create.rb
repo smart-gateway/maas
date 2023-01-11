@@ -38,7 +38,7 @@ Puppet::Functions.create_function(:'maas::machine_create') do
     body.merge!(power_parameters)
     request.body = JSON.dump(body)
     response = http.request(request)
-    return response.read_body
+    return response
   end
 end
 
