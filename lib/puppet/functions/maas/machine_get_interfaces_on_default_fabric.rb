@@ -10,12 +10,6 @@ Puppet::Functions.create_function(:'maas::machine_get_ifaces_num_fabric') do
     param 'String', :system_id
   end
 
-  class String
-    def is_i?
-      !!(self =~ /\A[-+]?[0-9]+\z/)
-    end
-  end
-
   def machine_get_ifaces_num_fabric(server, consumer_token, auth_token, auth_signature, system_id)
     url = URI("http://#{server}:5240/MAAS/api/2.0/machines/#{system_id}")
 
@@ -29,7 +23,7 @@ Puppet::Functions.create_function(:'maas::machine_get_ifaces_num_fabric') do
     interface_ids = []
     data['interface_set'].each do |interface|
       fabric = interface['vlan']['fabric'].gsub("fabric-", "")
-      if fabric.is_i?
+      if fabric.to_i.to_s == fabric
         interface_ids.append(interface['id'])
       end
     end
