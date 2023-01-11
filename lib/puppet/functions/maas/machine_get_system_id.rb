@@ -2,7 +2,7 @@ require "uri"
 require "net/http"
 
 Puppet::Functions.create_function(:'maas::machine_get_system_id') do
-  dispatch :machine_exists do
+  dispatch :machine_get_system_id do
     param 'String', :server
     param 'String', :consumer_token
     param 'String', :auth_token

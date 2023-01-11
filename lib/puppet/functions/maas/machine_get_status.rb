@@ -51,7 +51,7 @@ require "net/http"
 # FAILED_TESTING = 22
 
 Puppet::Functions.create_function(:'maas::machine_get_status') do
-  dispatch :machine_exists do
+  dispatch :machine_get_status do
     param 'String', :server
     param 'String', :consumer_token
     param 'String', :auth_token
