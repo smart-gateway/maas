@@ -6,7 +6,7 @@
 #   maas::host { 'namevar': }
 define maas::host (
   String            $ensure = present,
-  String            $maas_server = 'localhost',
+  Optional[String]  $maas_server,
   Optional[String]  $maas_consumer_key,
   Optional[String]  $maas_token_key,
   Optional[String]  $maas_token_secret,
@@ -25,6 +25,11 @@ define maas::host (
   # ready (ready/commissioned/present)
   # deployed (deployed)
   # absent (absent/removed)
+  $server = $maas_server ? {
+    undef   => $::maas::maas_server,
+    ""      => $::maas::maas_server,
+    default => $maas_server,
+  }
 
   $key = $maas_consumer_key ? {
     undef   => $::maas::maas_consumer_key,
