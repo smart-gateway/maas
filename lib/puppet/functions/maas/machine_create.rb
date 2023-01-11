@@ -22,7 +22,7 @@ Puppet::Functions.create_function(:'maas::machine_create') do
     http = Net::HTTP.new(url.host, url.port)
     nonce = rand(10 ** 30).to_s.rjust(30,'0')
     request = Net::HTTP::Post.new(url)
-    request["Authorization"] = "OAuth oauth_consumer_key=\"#{consumer_token}\",oauth_token=\"#{auth_token}\",oauth_signature_method=\"PLAINTEXT\",oauth_timestamp=\"#{Time.now.to_i}\",oauth_nonce=\"#{nonce}\",oauth_version=\"1.0\",oauth_signature=\"#{auth_signature}\""
+    request["Authorization"] = "OAuth oauth_consumer_key=\"#{consumer_token}\",oauth_token=\"#{auth_token}\",oauth_signature_method=\"PLAINTEXT\",oauth_timestamp=\"#{Time.now.to_i}\",oauth_nonce=\"#{nonce}\",oauth_version=\"1.0\",oauth_signature=\"%26#{auth_signature}\""
     request["Content-Type"] = "application/json"
     body = {
       "architecture": machine_architecture,
