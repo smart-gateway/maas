@@ -4,19 +4,20 @@ require "net/http"
 
 Puppet::Functions.create_function(:'maas::machine_create') do
   dispatch :machine_create do
-    param 'String', :server
-    param 'String', :consumer_token
-    param 'String', :auth_token
-    param 'String', :auth_signature
-    param 'String', :machine_name
-    param 'String', :machine_domain
-    param 'String', :machine_architecture
-    param 'String', :machine_mac_address
-    param 'String', :machine_description
-    param 'String', :power_type
-    param 'Hash',   :power_parameters
+    param 'String',  :server
+    param 'String',  :consumer_token
+    param 'String',  :auth_token
+    param 'String',  :auth_signature
+    param 'String',  :machine_name
+    param 'String',  :machine_domain
+    param 'String',  :machine_architecture
+    param 'String',  :machine_mac_address
+    param 'String',  :machine_description
+    param 'Boolean', :machine_commission
+    param 'String',  :power_type
+    param 'Hash',    :power_parameters
   end
-  def machine_create(server, consumer_token, auth_token, auth_signature, machine_name, machine_domain, machine_architecture, machine_mac_address, machine_description, power_type, power_parameters)
+  def machine_create(server, consumer_token, auth_token, auth_signature, machine_name, machine_domain, machine_architecture, machine_mac_address, machine_description, machine_commission, power_type, power_parameters)
     url = URI("http://#{server}:5240/MAAS/api/2.0/machines/")
 
     http = Net::HTTP.new(url.host, url.port)
@@ -30,7 +31,7 @@ Puppet::Functions.create_function(:'maas::machine_create') do
       "mac_addresses": machine_mac_address,
       "hostname": machine_name,
       "description": machine_description,
-      "commission": true,
+      "commission": machine_commission,
       "testing_scripts": "none",
       "domain": machine_domain,
       "power_type": power_type,

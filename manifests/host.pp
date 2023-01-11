@@ -59,22 +59,36 @@ define maas::host (
   }
 
   case $ensure {
-    'present', 'deployed': {
+    'new', 'created', 'ready', 'present', 'commissioned', 'deployed': {
       if !maas::machine_exists($server, $key, $token, $secret, $machine_name) {
-        $result = maas::machine_create($server, $key, $token, $secret, $machine_name, $machine_domain, $machine_architecture, $machine_mac, $machine_description, $power_type, $power_parameters)
+        $commission = $ensure ? {
+          'ready'        => true,
+          'present'      => true,
+          'commissioned' => true,
+          'deployed'     => true,
+          default        => false,
+        }
+        $result = maas::machine_create($server, $key, $token, $secret, $machine_name, $machine_domain, $machine_architecture, $machine_mac, $machine_description, $commission, $power_type, $power_parameters)
+      }
+
+      $status = maas::machine_get_status($server, $key, $token, $secret, $machine_name)
+
+      if $ensure == 'ready' or $ensure == 'present' or $ensure == 'commissioned' {
+        # Commission if the system is in the new state
+        if $status == 0 {
+          $system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
+          if $system_id != Undef {
+            $commission_result = maas::machine_commission($server, $key, $token, $secret, $system_id)
+          }
+        }
       }
 
       if $ensure == 'deployed' {
-        $status = maas::machine_get_status($server, $key, $token, $secret, $machine_name)
         if $status == 4 {
           $system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
           if $system_id != Undef {
             $deploy_result = maas::machine_deploy($server, $key, $token, $secret, $system_id, $user_data_b64)
           }
-        } elsif $status == 6 or $status == 9 {
-          # System is already deploying or deployed
-        } else {
-          notify { "${machine_name} unable to deploy as status is not in 'ready'...status = ${status}": }
         }
       }
     }
