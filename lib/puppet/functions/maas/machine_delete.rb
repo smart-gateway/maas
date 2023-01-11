@@ -4,14 +4,7 @@ require "net/http"
 Puppet::Functions.create_function(:'maas::delete_machine') do
 
   dispatch :delete_machine do
-    param 'String', :server
-    param 'String', :consumer_token
-    param 'String', :auth_token
-    param 'String', :auth_signature
-    param 'String', :machine_name
-    param 'String', :machine_domain
-    param 'String', :machine_architecture
-    param 'Hash',   :power_parameters
+
   end
   def delete_machine()
     url = URI("http://#{server}:5240/MAAS/api/2.0/machines/")
