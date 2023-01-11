@@ -15,8 +15,9 @@ define maas::host (
   String            $machine_description = '',
   String            $machine_domain = '',
   String            $machine_architecture = 'amd64',
-  String            $power_type = 'manual',
-  Hash              $power_parameters = {},
+  Optional[String]  $power_type = 'manual',
+  Optional[Hash]    $power_parameters = {},
+  Optional[String]  $user_data_b64 = '',
 ) {
 
   # Ensure Values
@@ -26,9 +27,21 @@ define maas::host (
   # absent (absent/removed)
 
   case $ensure {
-    'present': {
+    'present', 'deployed': {
       if !maas::machine_exists($maas_server, $maas_consumer_key.unwrap, $maas_token_key.unwrap, $maas_token_secret.unwrap, $machine_name) {
         $result = maas::machine_create($maas_server, $maas_consumer_key.unwrap, $maas_token_key.unwrap, $maas_token_secret.unwrap, $machine_name, $machine_domain, $machine_architecture, $machine_mac, $machine_description, $power_type, $power_parameters)
+      }
+
+      if $ensure == 'deployed' {
+        $status = maas::machine_get_status($maas_server, $maas_consumer_key.unwrap, $maas_token_key.unwrap, $maas_token_secret.unwrap, $machine_name)
+        if $status == 4 {
+          $system_id = maas::machine_get_system_id($maas_server, $maas_consumer_key.unwrap, $maas_token_key.unwrap, $maas_token_secret.unwrap, $machine_name)
+          if $system_id != Undef {
+            $deploy_result = maas::machine_deploy($maas_server, $maas_consumer_key.unwrap, $maas_token_key.unwrap, $maas_token_secret.unwrap, $system_id, $user_data_b64)
+          }
+        } else {
+          notify { "${machine_name} unable to deploy as status is not in 'ready'...status = ${status}": }
+        }
       }
     }
 
