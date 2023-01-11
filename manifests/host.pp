@@ -59,8 +59,12 @@ define maas::host (
   }
 
   case $ensure {
+    # Make sure system is enlisted in some state
     'new', 'created', 'ready', 'present', 'commissioned', 'deployed': {
+
+      # If system doesn't exist yet then create it
       if !maas::machine_exists($server, $key, $token, $secret, $machine_name) {
+        # Set a variable that says if we should commission the newly added system or not
         $commission = $ensure ? {
           'ready'        => true,
           'present'      => true,
@@ -68,12 +72,15 @@ define maas::host (
           'deployed'     => true,
           default        => false,
         }
+        # Create the machine
         $result = maas::machine_create($server, $key, $token, $secret, $machine_name, $machine_domain, $machine_architecture, $machine_mac, $machine_description, $commission, $power_type, $power_parameters)
       }
 
+      # Get the machines status
       $status = maas::machine_get_status($server, $key, $token, $secret, $machine_name)
 
-      if $ensure == 'ready' or $ensure == 'present' or $ensure == 'commissioned' {
+      # If it should be in a commissioned state then ensure it has been commissioned
+      if $ensure == 'ready' or $ensure == 'present' or $ensure == 'commissioned' or $ensure == 'deployed' {
         # Commission if the system is in the new state
         if $status == 0 {
           $system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
@@ -83,6 +90,7 @@ define maas::host (
         }
       }
 
+      # If the system should be deployed deploy it once it is in the ready state
       if $ensure == 'deployed' {
         if $status == 4 {
           $system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
