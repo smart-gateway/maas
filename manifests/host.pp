@@ -28,7 +28,7 @@ define maas::host (
   case $ensure {
     'present': {
       if !maas::machine_exists($maas_server, $maas_consumer_key.unwrap, $maas_token_key.unwrap, $maas_token_secret.unwrap, $machine_name) {
-        $result = maas::machine_create($maas_server, $maas_consumer_key, $maas_token_key, $maas_token_secret, $machine_name, $machine_domain, $machine_architecture, $machine_mac, $machine_description, $power_type, $power_parameters)
+        $result = maas::machine_create($maas_server, $maas_consumer_key.unwrap, $maas_token_key.unwrap, $maas_token_secret.unwrap, $machine_name, $machine_domain, $machine_architecture, $machine_mac, $machine_description, $power_type, $power_parameters)
         notify { "result: ${result}": }
       }
     }
