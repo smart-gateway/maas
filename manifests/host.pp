@@ -12,6 +12,6 @@ define maas::host (
   Sensitive[String] $maas_token_secret = '',
 ) {
   # Test to see if I can even access the API
-  $result = maas::create_machine()
-  notify { "result: ${result}": }
+  #$result = maas::create_machine()
+  #notify { "result: ${result}": }
 }
