@@ -74,7 +74,7 @@ define maas::host (
           default        => false,
         }
         # Create the machine
-        $result = maas::machine_create($server, $key, $token, $secret, $machine_name, $machine_domain, $machine_architecture, $machine_mac, $machine_description, $commission, $power_type, $power_parameters)
+        $result = maas::machine_create($server, $key, $token, $secret, $machine_name, $machine_domain, $machine_architecture, $machine_mac, $machine_description, $commission, false, $power_type, $power_parameters)
       }
 
       # Get the machines status
@@ -126,7 +126,7 @@ define maas::host (
     'registered': {
       if !maas::machine_exists($server, $key, $token, $secret, $machine_name) {
         # Create the machine
-        $result = maas::machine_create($server, $key, $token, $secret, $machine_name, $machine_domain, $machine_architecture, $machine_mac, $machine_description, false, $power_type, $power_parameters)
+        $result = maas::machine_create($server, $key, $token, $secret, $machine_name, $machine_domain, $machine_architecture, $machine_mac, $machine_description, false, true, $power_type, $power_parameters)
       }
     }
     default: {
