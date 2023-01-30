@@ -123,6 +123,12 @@ define maas::host (
       }
     }
 
+    'registered': {
+      if !maas::machine_exists($server, $key, $token, $secret, $machine_name) {
+        # Create the machine
+        $result = maas::machine_create($server, $key, $token, $secret, $machine_name, $machine_domain, $machine_architecture, $machine_mac, $machine_description, false, $power_type, $power_parameters)
+      }
+    }
     default: {
       err("invalid ensure value ${ensure} specified")
     }
