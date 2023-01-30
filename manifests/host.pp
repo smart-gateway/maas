@@ -108,9 +108,9 @@ define maas::host (
       # If the system should be deployed deploy it once it is in the ready state
       if $ensure == 'deployed' {
         if $status == 4 {
-          $system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
-          if $system_id != Undef {
-            $deploy_result = maas::machine_deploy($server, $key, $token, $secret, $system_id, $user_data_b64)
+          $system_to_deploy = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
+          if $system_to_deploy != Undef {
+            $deploy_result = maas::machine_deploy($server, $key, $token, $secret, $system_to_deploy, $user_data_b64)
           }
         }
       }
