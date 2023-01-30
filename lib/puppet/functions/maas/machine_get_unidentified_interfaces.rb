@@ -11,7 +11,7 @@ Puppet::Functions.create_function(:'maas::machine_get_unidentified_interfaces') 
   end
 
   def machine_get_unidentified_interfaces(server, consumer_token, auth_token, auth_signature, system_id)
-    url = URI("http://#{server}:5240/MAAS/api/2.0/machines/#{system_id}")
+    url = URI("http://#{server}:5240/MAAS/api/2.0/machines/#{system_id}/")
 
     http = Net::HTTP.new(url.host, url.port);
     nonce = rand(10 ** 30).to_s.rjust(30,'0')
