@@ -2,7 +2,7 @@ require "uri"
 require "net/http"
 
 Puppet::Functions.create_function(:'maas::machine_get_unidentified_interfaces') do
-  dispatch :machine_get_ifaces_num_fabric do
+  dispatch :machine_get_unidentified_interfaces do
     param 'String', :server
     param 'String', :consumer_token
     param 'String', :auth_token
