@@ -88,7 +88,7 @@ define maas::host (
       if $status == 0 or $status == 4 or $status == 8 or $status == 10 and $::maas::maas_default_fabric != '' {
         $system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
         $unassigned_interfaces = maas::machine_get_unidentified_interfaces($server, $key, $token, $secret, $system_id)
-        $vlan_id = maas::fabric_get_default_vlan_id($server, $key, $token, $secret, $::maas::maas_default_fabric)
+        $vlan_id = maas::fabric_get_default_vlan($server, $key, $token, $secret, $::maas::maas_default_fabric)
         $unassigned_interfaces.each | $idx, $interface_id | {
           maas::interface_update_fabric($server, $key, $token, $secret, $system_id, $interface_id, $vlan_id)
         }
