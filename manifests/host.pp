@@ -11,6 +11,7 @@ define maas::host (
   String            $machine_description = '',
   String            $machine_domain = '',
   String            $machine_architecture = 'amd64',
+  String            $machine_owner = '',
   Optional[String]  $maas_server = undef,
   Optional[String]  $maas_consumer_key = undef,
   Optional[String]  $maas_token_key = undef,
@@ -79,15 +80,19 @@ define maas::host (
       # Get the machines status
       $status = maas::machine_get_status($server, $key, $token, $secret, $machine_name)
 
+      # NEW = 0
+      # READY = 4
+      # BROKEN = 8
+      # ALLOCATED = 10
       # # If a default fabric is set then make sure all unassigned interfaces are put on the default fabric
-      # if $status == 0 or $status == 1 or $status == 10 or $status == 8 and $::maas::maas_default_fabric != '' {
-      #   $system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
-      #   $unassigned_interfaces = maas::machine_get_ifaces_num_fabric($server, $key, $token, $secret, $system_id)
-      #   $vlan_id = maas::fabric_get_default_vlan_id($server, $key, $token, $secret, $::maas::maas_default_fabric)
-      #   $unassigned_interfaces.each | $idx, $interface_id | {
-      #     maas::interface_update_fabric($server, $key, $token, $secret, $system_id, $interface_id, $vlan_id)
-      #   }
-      # }
+      if $status == 0 or $status == 4 or $status == 8 or $status == 10 and $::maas::maas_default_fabric != '' {
+        $system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
+        $unassigned_interfaces = maas::machine_get_ifaces_num_fabric($server, $key, $token, $secret, $system_id)
+        $vlan_id = maas::fabric_get_default_vlan_id($server, $key, $token, $secret, $::maas::maas_default_fabric)
+        $unassigned_interfaces.each | $idx, $interface_id | {
+          maas::interface_update_fabric($server, $key, $token, $secret, $system_id, $interface_id, $vlan_id)
+        }
+      }
 
       # If it should be in a commissioned state then ensure it has been commissioned
       if $ensure == 'ready' or $ensure == 'present' or $ensure == 'commissioned' or $ensure == 'deployed' {
