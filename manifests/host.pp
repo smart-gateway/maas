@@ -123,10 +123,9 @@ define maas::host (
       }
     }
 
-    'registered': {
+    'register-deployed': {
       if !maas::machine_exists($server, $key, $token, $secret, $machine_name) {
         # Create the machine
-        notify {"creating machine ${machine_name} and marking as deployed": }
         $result = maas::machine_create($server, $key, $token, $secret, $machine_name, $machine_domain, $machine_architecture, $machine_mac, $machine_description, false, true, $power_type, $power_parameters)
       }
     }
