@@ -19,7 +19,7 @@ Puppet::Functions.create_function(:'maas::machine_get_pool') do
     response = http.request(request)
     data = JSON.parse(response.read_body)
 
-    if data.key?['pool']
+    if data.key?('pool')
       return data['pool']['name']
     else
       return nil
