@@ -19,6 +19,8 @@ define maas::host (
   Optional[String]  $power_type = 'manual',
   Optional[Hash]    $power_parameters = {},
   Optional[String]  $user_data_b64 = '',
+  Optional[String]  $machine_zone = '',
+  Optional[String]  $machine_pool = '',
 ) {
 
   # Ensure Values
@@ -79,6 +81,14 @@ define maas::host (
 
       # Get the machines status
       $status = maas::machine_get_status($server, $key, $token, $secret, $machine_name)
+
+      # Set the pool
+      if $machine_pool != '' {
+        $system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
+        if maas::machine_get_pool($server, $key, $token, $secret, $system_id) != $machine_pool {
+          maas::machine_set_pool($server, $key, $token, $secret, $system_id, $machine_pool)
+        }
+      }
 
       # NEW = 0
       # READY = 4
