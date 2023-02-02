@@ -82,9 +82,10 @@ define maas::host (
       # Get the machines status
       $status = maas::machine_get_status($server, $key, $token, $secret, $machine_name)
 
+      # Get the system id
+      $system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
       # Set the pool
       if $machine_pool != '' {
-        $system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
         if maas::machine_get_pool($server, $key, $token, $secret, $system_id) != $machine_pool {
           maas::machine_set_pool($server, $key, $token, $secret, $system_id, $machine_pool)
         }
@@ -96,7 +97,6 @@ define maas::host (
       # ALLOCATED = 10
       # # If a default fabric is set then make sure all unassigned interfaces are put on the default fabric
       if $status == 0 or $status == 4 or $status == 8 or $status == 10 and $::maas::maas_default_fabric != '' {
-        $system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
         $unassigned_interfaces = maas::machine_get_unidentified_interfaces($server, $key, $token, $secret, $system_id)
         $vlan_id = maas::fabric_get_default_vlan($server, $key, $token, $secret, $::maas::maas_default_fabric)
         $unassigned_interfaces.each | $idx, $interface_id | {
@@ -108,7 +108,6 @@ define maas::host (
       if $ensure == 'ready' or $ensure == 'present' or $ensure == 'commissioned' or $ensure == 'deployed' {
         # Commission if the system is in the new state
         if $status == 0 {
-          $system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
           if $system_id != Undef {
             $commission_result = maas::machine_commission($server, $key, $token, $secret, $system_id)
           }
@@ -118,9 +117,8 @@ define maas::host (
       # If the system should be deployed deploy it once it is in the ready state
       if $ensure == 'deployed' {
         if $status == 4 {
-          $system_to_deploy = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
           if $system_to_deploy != Undef {
-            $deploy_result = maas::machine_deploy($server, $key, $token, $secret, $system_to_deploy, $user_data_b64)
+            $deploy_result = maas::machine_deploy($server, $key, $token, $secret, $system_id, $user_data_b64)
           }
         }
       }
