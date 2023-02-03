@@ -97,6 +97,7 @@ define maas::host (
       # ALLOCATED = 10
       # # If a default fabric is set then make sure all unassigned interfaces are put on the default fabric
       if $status == 0 or $status == 4 or $status == 8 or $status == 10 and $::maas::maas_default_fabric != '' {
+        notify { "system_id = ${system_id}": }
         $unassigned_interfaces = maas::machine_get_unidentified_interfaces($server, $key, $token, $secret, $system_id)
         $vlan_id = maas::fabric_get_default_vlan($server, $key, $token, $secret, $::maas::maas_default_fabric)
         $unassigned_interfaces.each | $idx, $interface_id | {
