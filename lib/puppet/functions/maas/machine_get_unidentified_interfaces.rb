@@ -21,7 +21,7 @@ Puppet::Functions.create_function(:'maas::machine_get_unidentified_interfaces') 
     data = JSON.parse(response.read_body)
 
     interface_ids = []
-    if !data.nil? && data.key?('interface_set') do
+    if !data.nil? && data.key?('interface_set')
       data['interface_set'].each do |interface|
         fabric = interface['vlan']['fabric'].gsub("fabric-", "")
         if fabric.to_i.to_s == fabric
