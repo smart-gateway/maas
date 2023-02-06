@@ -141,6 +141,17 @@ define maas::host (
       if !maas::machine_exists($server, $key, $token, $secret, $machine_name) {
         # Create the machine
         $result = maas::machine_create($server, $key, $token, $secret, $machine_name, $machine_domain, $machine_architecture, $machine_mac, $machine_description, false, true, $power_type, $power_parameters)
+
+        # Set the pool
+        if $machine_pool != '' {
+
+          # Get the system id
+          $pool_system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
+
+          if maas::machine_get_pool($server, $key, $token, $secret, $pool_system_id) != $machine_pool {
+            maas::machine_set_pool($server, $key, $token, $secret, $pool_system_id, $machine_pool)
+          }
+        }
       }
     }
     default: {
