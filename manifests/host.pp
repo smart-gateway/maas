@@ -140,6 +140,7 @@ define maas::host (
     'register-deployed': {
       if !maas::machine_exists($server, $key, $token, $secret, $machine_name) {
         # Create the machine
+        notify { "creating ${machine_name}": }
         $result = maas::machine_create($server, $key, $token, $secret, $machine_name, $machine_domain, $machine_architecture, $machine_mac, $machine_description, false, true, $power_type, $power_parameters)
         notify { "${machine_name} creation results: ${result}": }
         # Set the pool
