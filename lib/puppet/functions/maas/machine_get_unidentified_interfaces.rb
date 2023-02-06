@@ -20,11 +20,11 @@ Puppet::Functions.create_function(:'maas::machine_get_unidentified_interfaces') 
     request["Authorization"] = "OAuth oauth_consumer_key=\"#{consumer_token}\",oauth_token=\"#{auth_token}\",oauth_signature_method=\"PLAINTEXT\",oauth_timestamp=\"#{Time.now.to_i}\",oauth_nonce=\"#{nonce}\",oauth_version=\"1.0\",oauth_signature=\"%26#{auth_signature}\""
     response = http.request(request)
     data = JSON.parse(response.read_body)
-    jdata = JSON.pretty_generate(data)
-    Puppet.send("warning", "data: #{jdata}")
+
     interface_ids = []
     if !data.nil? && data.key?('interface_set')
       data['interface_set'].each do |interface|
+        Puppet.send("warning", "interface_set: #{interface}")
         fabric = interface['vlan']['fabric'].gsub("fabric-", "")
         if fabric.to_i.to_s == fabric
           interface_ids.append(interface['id'])
