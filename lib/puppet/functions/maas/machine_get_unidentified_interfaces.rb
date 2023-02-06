@@ -1,4 +1,5 @@
 require "uri"
+require "json"
 require "net/http"
 
 Puppet::Functions.create_function(:'maas::machine_get_unidentified_interfaces') do
@@ -20,7 +21,7 @@ Puppet::Functions.create_function(:'maas::machine_get_unidentified_interfaces') 
     response = http.request(request)
     data = JSON.parse(response.read_body)
 
-    Puppet.send("warning", "data: #{data}")
+    Puppet.send("warning", "data: #{JSON.pretty_generate(data)}")
     interface_ids = []
     if !data.nil? && data.key?('interface_set')
       data['interface_set'].each do |interface|
