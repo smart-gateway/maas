@@ -98,15 +98,15 @@ define maas::host (
       # BROKEN = 8
       # ALLOCATED = 10
       # # If a default fabric is set then make sure all unassigned interfaces are put on the default fabric
-      if $status == 0 or $status == 4 or $status == 8 or $status == 10 and $::maas::maas_default_fabric != '' {
-        # $int_system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
-        #
-        # $unassigned_interfaces = maas::machine_get_unidentified_interfaces($server, $key, $token, $secret, $int_system_id)
-        # $vlan_id = maas::fabric_get_default_vlan($server, $key, $token, $secret, $::maas::maas_default_fabric)
-        # $unassigned_interfaces.each | $idx, $interface_id | {
-        #   maas::interface_update_fabric($server, $key, $token, $secret, $int_system_id, $interface_id, $vlan_id)
-        # }
-      }
+      # if $status == 0 or $status == 4 or $status == 8 or $status == 10 and $::maas::maas_default_fabric != '' {
+      #   $int_system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
+      #
+      #   $unassigned_interfaces = maas::machine_get_unidentified_interfaces($server, $key, $token, $secret, $int_system_id)
+      #   $vlan_id = maas::fabric_get_default_vlan($server, $key, $token, $secret, $::maas::maas_default_fabric)
+      #   $unassigned_interfaces.each | $idx, $interface_id | {
+      #     maas::interface_update_fabric($server, $key, $token, $secret, $int_system_id, $interface_id, $vlan_id)
+      #   }
+      # }
 
       # If it should be in a commissioned state then ensure it has been commissioned
       if $ensure == 'ready' or $ensure == 'present' or $ensure == 'commissioned' or $ensure == 'deployed' {
