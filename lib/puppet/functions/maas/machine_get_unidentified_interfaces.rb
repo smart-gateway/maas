@@ -22,13 +22,11 @@ Puppet::Functions.create_function(:'maas::machine_get_unidentified_interfaces') 
     data = JSON.parse(response.read_body)
     #Puppet.send("warning", "interface_set json: #{JSON.pretty_generate(data['interface_set'])}")
     interface_ids = []
-    if !data.nil? && data.key?('interface_set')
-      data['interface_set'].each do |interface|
-        if !interface['vlan'].nil?
-          fabric = interface['vlan']['fabric'].gsub("fabric-", "")
-          if fabric.to_i.to_s == fabric
-            interface_ids.append(interface['id'])
-          end
+    data['interface_set'].each do |interface|
+      unless interface['vlan'].nil?
+        fabric = interface['vlan']['fabric'].gsub("fabric-", "")
+        if fabric.to_i.to_s == fabric
+          interface_ids.append(interface['id'])
         end
       end
     end
