@@ -88,7 +88,7 @@ define maas::host (
         # Get the system id
         $pool_system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
 
-        if $pool_system_id != nil {
+        if $pool_system_id != Undef {
           if maas::machine_get_pool($server, $key, $token, $secret, $pool_system_id) != $machine_pool {
             maas::machine_set_pool($server, $key, $token, $secret, $pool_system_id, $machine_pool)
           }
@@ -151,7 +151,7 @@ define maas::host (
           # Get the system id
           $pool_system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
 
-          if $pool_system_id != nil {
+          if $pool_system_id != Undef {
             if maas::machine_get_pool($server, $key, $token, $secret, $pool_system_id) != $machine_pool {
               maas::machine_set_pool($server, $key, $token, $secret, $pool_system_id, $machine_pool)
             }
