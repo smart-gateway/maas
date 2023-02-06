@@ -20,7 +20,7 @@ Puppet::Functions.create_function(:'maas::machine_get_unidentified_interfaces') 
     response = http.request(request)
     data = JSON.parse(response.read_body)
 
-    Puppet.info("this is a test")
+    Puppet.debug("this is a test")
     interface_ids = []
     if !data.nil? && data.key?('interface_set')
       data['interface_set'].each do |interface|
