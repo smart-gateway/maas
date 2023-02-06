@@ -41,7 +41,7 @@ Puppet::Functions.create_function(:'maas::machine_create') do
     body.merge!(power_parameters)
     request.body = JSON.dump(body)
     response = http.request(request)
-    Puppet.send("warning", "create machine: #{response}")
+    Puppet.send("warning", "create machine: #{response.body}")
     return response
   end
 end
