@@ -10,6 +10,7 @@ class maas (
   String           $maas_token_key,
   String           $maas_token_secret,
   Optional[String] $maas_default_fabric = '',
+  Optional[Hash]   $maas_identities = Undef,
 ) {
   # Notes:
   #   1. A machine can be created with deployed = true which will skip commissioning and deployment and mark it as deployed.

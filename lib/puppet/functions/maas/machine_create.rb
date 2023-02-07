@@ -43,7 +43,7 @@ Puppet::Functions.create_function(:'maas::machine_create') do
     response = http.request(request)
     case response
     when Net::HTTPServerError
-      Puppet.send("error", "create machine failed: #{response.message}")
+      Puppet.send("warning", "create machine failed: #{response.message}")
     else
       # type code here
     end
