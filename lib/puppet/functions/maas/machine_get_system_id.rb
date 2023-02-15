@@ -25,6 +25,8 @@ Puppet::Functions.create_function(:'maas::machine_get_system_id') do
       end
     end
 
+    Puppet.send("warning", "failed to find system_id with name: #{machine_name}")
+
     return nil
   end
 end
