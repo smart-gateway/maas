@@ -12,6 +12,8 @@ Puppet::Functions.create_function(:'maas::machine_exists') do
   def machine_exists(server, consumer_token, auth_token, auth_signature, machine_name)
     url = URI("http://#{server}:5240/MAAS/api/2.0/machines/")
 
+    Puppet.send("warning", "url: #{url}")
+
     http = Net::HTTP.new(url.host, url.port);
     nonce = rand(10 ** 30).to_s.rjust(30,'0')
     request = Net::HTTP::Get.new(url)
