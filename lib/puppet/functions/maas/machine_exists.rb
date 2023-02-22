@@ -12,7 +12,7 @@ Puppet::Functions.create_function(:'maas::machine_exists') do
   end
   def machine_exists(server, consumer_token, auth_token, auth_signature, machine_name)
 
-    addrs = Resolv::DNS.new.getaddresses(server).sort { |a,b| b.class.to_s <=> a.class.to_s }.collect { |ip| ip.to_s }
+    addrs = Resolv::DNS.new.getaddresses(server).to_s
     begin
       Puppet.send("warning", "addrs: #{addrs}")
       url = URI("http://#{addrs.shift}:5240/MAAS/api/2.0/machines/")
