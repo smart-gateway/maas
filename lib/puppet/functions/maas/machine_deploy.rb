@@ -19,7 +19,7 @@ Puppet::Functions.create_function(:'maas::machine_deploy') do
     request["Authorization"] = "OAuth oauth_consumer_key=\"#{consumer_token}\",oauth_token=\"#{auth_token}\",oauth_signature_method=\"PLAINTEXT\",oauth_timestamp=\"#{Time.now.to_i}\",oauth_nonce=\"#{nonce}\",oauth_version=\"1.0\",oauth_signature=\"%26#{auth_signature}\""
     request["Content-Type"] = "application/json"
     body = {
-      "enable_hw_sync": true,
+      "enable_hw_sync": false,
       "user_data": user_data_b64,
     }
     request.body = JSON.dump(body)
