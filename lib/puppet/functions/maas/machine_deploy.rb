@@ -23,6 +23,7 @@ Puppet::Functions.create_function(:'maas::machine_deploy') do
       "user_data": user_data_b64,
     }
     request.body = JSON.dump(body)
+    Puppet.send("warning", "deploy request body: #{request.body}")
     response = http.request(request)
     return response.code == '200'
   end
