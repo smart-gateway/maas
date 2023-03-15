@@ -192,7 +192,7 @@ define maas::host (
     }
 
     'absent': {
-      if maas::machine_exists() {
+      if maas::machine_exists($server, $key, $token, $secret, $machine_name, $module_debug) {
         if $module_debug {
           info('maas: removing machine')
         }
@@ -201,7 +201,7 @@ define maas::host (
     }
 
     'register-deployed': {
-      if !maas::machine_exists($server, $key, $token, $secret, $machine_name) {
+      if !maas::machine_exists($server, $key, $token, $secret, $machine_name, $module_debug) {
         # Create the machine
         if $module_debug {
           info("maas: machine ${machine_name} doesn't exist but has been requested to be added in the deployed state")
