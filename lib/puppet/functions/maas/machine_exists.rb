@@ -28,7 +28,8 @@ Puppet::Functions.create_function(:'maas::machine_exists') do
         return true
       end
     end
-
+    return false
+    
     # url = URI("http://#{server}:5240/MAAS/api/2.0/machines/")
     # http = Net::HTTP.new(url.host, url.port);
     # nonce = rand(10 ** 30).to_s.rjust(30,'0')
