@@ -81,7 +81,7 @@ define maas::host (
       }
 
       # If system doesn't exist yet then create it
-      if !maas::machine_exists($server, $key, $token, $secret, $machine_name) {
+      if !maas::machine_exists($server, $key, $token, $secret, $machine_name, $module_debug) {
         # Set a variable that says if we should commission the newly added system or not
         $commission = $ensure ? {
           'ready'        => true,
