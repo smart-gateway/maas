@@ -22,7 +22,6 @@ Puppet::Functions.create_function(:'maas::machine_exists') do
     request["Authorization"] = "OAuth oauth_consumer_key=\"#{consumer_token}\",oauth_token=\"#{auth_token}\",oauth_signature_method=\"PLAINTEXT\",oauth_timestamp=\"#{Time.now.to_i}\",oauth_nonce=\"#{nonce}\",oauth_version=\"1.0\",oauth_signature=\"%26#{auth_signature}\""
     response = http.request(request)
     data = JSON.parse(response.read_body)
-    Puppet.send("info", "data: #{data}") if module_debug
     data.each do |host|
       if host['hostname'] == machine_name
         Puppet.send("info", "found host: #{host}") if module_debug
