@@ -23,27 +23,26 @@ define maas::host (
   Optional[String]  $machine_pool = '',
   Optional[Boolean] $module_debug = false,
 ) {
-
   # Ensure Values
   # new (new/created)
   # ready (ready/commissioned/present)
   # deployed (deployed)
   # absent (absent/removed)
   $server = $maas_server ? {
-    undef   => $::maas::maas_server,
-    ""      => $::maas::maas_server,
+    undef   => $maas::maas_server,
+    ''      => $maas::maas_server,
     default => $maas_server,
   }
   if $module_debug {
     info("maas: server = ${server}")
   }
-  
+
   $key = $maas_consumer_key ? {
-    undef   => $::maas::maas_consumer_key,
-    ""      => $::maas::maas_consumer_key,
+    undef   => $maas::maas_consumer_key,
+    ''      => $maas::maas_consumer_key,
     default => $maas_consumer_key,
   }
-  if $key == undef or $key == "" {
+  if $key == undef or $key == '' {
     err('maas_consumer_key is required and must be set at the class level or in the host parameters')
   }
   if $module_debug {
@@ -51,11 +50,11 @@ define maas::host (
   }
 
   $token = $maas_token_key ? {
-    undef   => $::maas::maas_token_key,
-    ""      => $::maas::maas_token_key,
+    undef   => $maas::maas_token_key,
+    ''      => $maas::maas_token_key,
     default => $maas_token_key,
   }
-  if $token == undef or $token == "" {
+  if $token == undef or $token == '' {
     err('maas_token_key is required and must be set at the class level or in the host parameters')
   }
   if $module_debug {
@@ -63,24 +62,24 @@ define maas::host (
   }
 
   $secret = $maas_token_secret ? {
-    undef   => $::maas::maas_token_secret,
-    ""      => $::maas::maas_token_secret,
+    undef   => $maas::maas_token_secret,
+    ''      => $maas::maas_token_secret,
     default => $maas_token_secret,
   }
-  if $secret == undef or $secret == "" {
+  if $secret == undef or $secret == '' {
     err('maas_token_secret is required and must be set at the class level or in the host parameters')
   }
   if $module_debug {
     info("maas: secret = ${secret}")
   }
-  
+
   case $ensure {
     # Make sure system is enlisted in some state
     'new', 'created', 'ready', 'present', 'commissioned', 'deployed': {
       if $module_debug {
-        info("maas: creating machine. ensure = ${ensure}")
+        info("maas: creating machine ${machine_name} ensure = ${ensure}")
       }
-      
+
       # If system doesn't exist yet then create it
       if !maas::machine_exists($server, $key, $token, $secret, $machine_name) {
         # Set a variable that says if we should commission the newly added system or not
@@ -94,7 +93,7 @@ define maas::host (
         if $module_debug {
           info("maas: creating machine. name = ${machine_name}, domain = ${machine_domain}, mac = ${machine_mac}, commission = ${commission}, power = ${power_type}, params = ${power_parameters}")
         }
-        
+
         # Create the machine
         $result = maas::machine_create($server, $key, $token, $secret, $machine_name, $machine_domain, $machine_architecture, $machine_mac, $machine_description, $commission, false, $power_type, $power_parameters)
         if $module_debug {
@@ -110,18 +109,17 @@ define maas::host (
 
       # Set the pool
       if $machine_pool != '' {
-
         # Get the system id
         $pool_system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
         if $module_debug {
-          info("maas: pool_system_id: ${pool_system_id}")
+          info("maas: pool_system_id = ${pool_system_id}")
         }
-        
+
         if $pool_system_id != undef {
           if maas::machine_get_pool($server, $key, $token, $secret, $pool_system_id) != $machine_pool {
             maas::machine_set_pool($server, $key, $token, $secret, $pool_system_id, $machine_pool)
             if $module_debug {
-             info("maas: set machine pool = ${machine_pool}")
+              info("maas: set machine pool = ${machine_pool}")
             }
           }
         }
@@ -132,19 +130,19 @@ define maas::host (
       # BROKEN = 8
       # ALLOCATED = 10
       # If a default fabric is set then make sure all unassigned interfaces are put on the default fabric
-      if $status == 0 or $status == 4 or $status == 8 or $status == 10 and $::maas::maas_default_fabric != '' {
+      if $status == 0 or $status == 4 or $status == 8 or $status == 10 and $maas::maas_default_fabric != '' {
         if $module_debug {
-         info("maas: machine is in status = ${status} and default fabric is configured to be set to ${::maas::maas_default_fabric}")
+          info("maas: machine is in status = ${status} and default fabric is configured to be set to ${maas::maas_default_fabric}")
         }
-        
+
         $int_system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
 
         $unassigned_interfaces = maas::machine_get_unidentified_interfaces($server, $key, $token, $secret, $int_system_id)
         if $module_debug {
           info("maas: machine has the following unassigned interfaces ${unassigned_interfaces}")
         }
-        
-        $vlan_id = maas::fabric_get_default_vlan($server, $key, $token, $secret, $::maas::maas_default_fabric)
+
+        $vlan_id = maas::fabric_get_default_vlan($server, $key, $token, $secret, $maas::maas_default_fabric)
         $unassigned_interfaces.each | $idx, $interface_id | {
           maas::interface_update_fabric($server, $key, $token, $secret, $int_system_id, $interface_id, $vlan_id)
           if $module_debug {
@@ -196,7 +194,7 @@ define maas::host (
     'absent': {
       if maas::machine_exists() {
         if $module_debug {
-          info("maas: removing machine")
+          info('maas: removing machine')
         }
         $result = maas::machine_delete()
       }
@@ -212,10 +210,9 @@ define maas::host (
         if $module_debug {
           info("maas: ${machine_name} create result = ${result}")
         }
-        
+
         # Set the pool
         if $machine_pool != '' {
-
           # Get the system id
           $pool_system_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
 
@@ -227,7 +224,6 @@ define maas::host (
               maas::machine_set_pool($server, $key, $token, $secret, $pool_system_id, $machine_pool)
             }
           }
-
         }
       }
     }
