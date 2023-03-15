@@ -67,7 +67,7 @@ define maas::host (
     ""      => $::maas::maas_token_secret,
     default => $maas_token_secret,
   }
-  if $secret == undef or $ksecretey == "" {
+  if $secret == undef or $secret == "" {
     err('maas_token_secret is required and must be set at the class level or in the host parameters')
   }
   if $module_debug {
