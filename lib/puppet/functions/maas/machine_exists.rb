@@ -9,8 +9,9 @@ Puppet::Functions.create_function(:'maas::machine_exists') do
     param 'String', :auth_token
     param 'String', :auth_signature
     param 'String', :machine_name
+    param 'Boolean', :module_debug
   end
-  def machine_exists(server, consumer_token, auth_token, auth_signature, machine_name)
+  def machine_exists(server, consumer_token, auth_token, auth_signature, machine_name, module_debug)
 
     addr = Resolv.getaddress(server)
     url = URI("http://#{addr}:5240/MAAS/api/2.0/machines/?hostname=#{machine_name}")
@@ -22,6 +23,7 @@ Puppet::Functions.create_function(:'maas::machine_exists') do
     data = JSON.parse(response.read_body)
     data.each do |host|
       if host['hostname'] == machine_name
+        Puppet.send("info", "found host: #{host}") if module_debug
         return true
       end
     end
