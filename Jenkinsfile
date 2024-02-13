@@ -1,4 +1,4 @@
-def REPOS = [https://github.com/intel-innersource/frameworks.automation.sec.code.puppet.github-runner/tree/main
+def REPOS = [
     'primary',
     'niwc',
     'lenovo',
