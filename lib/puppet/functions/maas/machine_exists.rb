@@ -15,7 +15,7 @@ Puppet::Functions.create_function(:'maas::machine_exists') do
 
     addr = Resolv.getaddress(server)
     #url = URI("http://#{addr}:5240/MAAS/api/2.0/machines/?hostname=#{machine_name}")
-    url = URI("http://#{addr}:8080/plugins/maas/machine/id?host=#{machine_name}")
+    url = URI("http://#{addr}:8180/plugins/maas/machine/id?host=#{machine_name}")
     http = Net::HTTP.new(url.host, url.port);
     nonce = rand(10 ** 30).to_s.rjust(30,'0')
     request = Net::HTTP::Get.new(url)

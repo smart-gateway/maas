@@ -60,7 +60,7 @@ Puppet::Functions.create_function(:'maas::machine_get_status') do
   end
   def machine_get_status(server, consumer_token, auth_token, auth_signature, machine_name)
     #url = URI("http://#{server}:5240/MAAS/api/2.0/machines/?hostname=#{machine_name}")
-    url = URI("http://#{server}:8080/plugins/maas/machine/status?host=#{machine_name}")
+    url = URI("http://#{server}:8180/plugins/maas/machine/status?host=#{machine_name}")
     http = Net::HTTP.new(url.host, url.port);
     nonce = rand(10 ** 30).to_s.rjust(30,'0')
     request = Net::HTTP::Get.new(url)
