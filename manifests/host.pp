@@ -8,6 +8,7 @@ define maas::host (
   String            $ensure = present,
   String            $machine_name,
   String            $machine_mac,
+  String            $machine_ip = '',
   String            $machine_description = '',
   String            $machine_domain = '',
   String            $machine_architecture = 'amd64',
@@ -77,7 +78,7 @@ define maas::host (
     # Make sure system is enlisted in some state
     'new', 'created', 'ready', 'present', 'commissioned', 'deployed': {
       if $module_debug {
-        info("maas: creating machine ${machine_name} ensure = ${ensure}")
+        info("maas: enforcing machine ${machine_name} desired state ensure = ${ensure}")
       }
 
       # If system doesn't exist yet then create it
@@ -149,6 +150,13 @@ define maas::host (
             info("maas: updated fabric on ${int_system_id} interface ${interface_id} to ${vlan_id}")
           }
         }
+      }
+
+      # Set the ip address
+      if $status == 0 or $status == 4 or $status == 8 or $status == 10 and !empty($machine_ip) {
+        $sys_id = maas::machine_get_system_id($server, $key, $token, $secret, $machine_name)
+        $int_id = maas::machine_get_interface_on_fabric($server, $key, $token, $secret, $sys_id, 'fabric-bm')
+        maas::interface_link_subnet($server, $key, $token, $secret, $int_system_id, $int_id, $machine_ip)
       }
 
       # If it should be in a commissioned state then ensure it has been commissioned

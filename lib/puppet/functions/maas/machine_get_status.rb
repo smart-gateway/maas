@@ -70,7 +70,7 @@ Puppet::Functions.create_function(:'maas::machine_get_status') do
 
     begin
       data = JSON.parse(response.read_body)
-      return data['status']
+      return data['response'][0]['status'] if data['response'] && data['response'][0]
     rescue JSON::ParserError => e
       puts "Error parsing JSON: #{e}"
       return nil

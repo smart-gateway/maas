@@ -12,25 +12,28 @@ Puppet::Functions.create_function(:'maas::machine_get_unidentified_interfaces') 
   end
 
   def machine_get_unidentified_interfaces(server, consumer_token, auth_token, auth_signature, system_id)
-    #url = URI("http://#{server}:5240/MAAS/api/2.0/machines/#{system_id}/")
     url = URI("http://#{server}:8180/plugins/maas/machine/interfaces?id=#{system_id}")
-    http = Net::HTTP.new(url.host, url.port);
-    nonce = rand(10 ** 30).to_s.rjust(30,'0')
+    http = Net::HTTP.new(url.host, url.port)
+    nonce = rand(10 ** 30).to_s.rjust(30, '0')
     request = Net::HTTP::Get.new(url)
-    #request["Authorization"] = "OAuth oauth_consumer_key=\"#{consumer_token}\",oauth_token=\"#{auth_token}\",oauth_signature_method=\"PLAINTEXT\",oauth_timestamp=\"#{Time.now.to_i}\",oauth_nonce=\"#{nonce}\",oauth_version=\"1.0\",oauth_signature=\"%26#{auth_signature}\""
+
     response = http.request(request)
     data = JSON.parse(response.read_body)
-    #Puppet.send("warning", "interface_set json: #{JSON.pretty_generate(data['interface_set'])}")
+
     interface_ids = []
-    data['interfaces'].each do |interface|
-      unless interface['vlan'].nil?
-        fabric = interface['vlan']['fabric'].gsub("fabric-", "")
-        if fabric.to_i.to_s == fabric
-          interface_ids.append(interface['id'])
-        end
+    interfaces = data.dig('response', 0, 'interfaces')
+    return [] unless interfaces.is_a?(Array)
+
+    interfaces.each do |interface|
+      vlan = interface['vlan']
+      next if vlan.nil?
+
+      fabric = vlan['fabric'].to_s.gsub("fabric-", "")
+      if fabric.to_i.to_s == fabric
+        interface_ids << interface['id']
       end
     end
 
-    return interface_ids
+    interface_ids
   end
 end
